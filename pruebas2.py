@@ -1,3 +1,4 @@
+
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
@@ -52,12 +53,13 @@ X = data.drop(['merging_none_fraction', 'merging_minor-disturbance_fraction', 'm
 
 data['Merging'] = 0
 
-data['Merging'] = (data['merging_none_fraction'] < 0.5).astype(int)
+data['Merging'] = (data['merging_none_fraction'] < data['merging_merger_fraction'] + data['merging_major-disturbance_fraction']).astype(int)
 
 y = data['Merging']
+print(y.value_counts())
 
 
-
+'''
 ####################------------------------------------------##################
 
 
@@ -67,7 +69,90 @@ corr = aux.corr()
 correlaciones = corr.iloc[-1, :].sort_values()
 
 print(correlaciones)
+'''
 
+
+
+
+
+#### PREPARAR LOS DATOS PARA ENTRENAMIENTO Y PRUEBA, ADEMÁS DE ESTANDARIZAR LOS DATOS ##########
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, stratify= y, random_state=42)
+
+## Estandarizamos las muestras:
+scaler = StandardScaler()
+
+X_train_scaled = pd.DataFrame(scaler.fit_transform(X_train), columns= X_train.columns, index= X_train.index)
+X_test_scaled = pd.DataFrame(scaler.transform(X_test), columns= X_test.columns, index= X_test.index)
+
+
+######## CREAMOS LOS MODELOS DONDE VAMOS A IMPLEMENTAR LOS DATOS #######
+
+## XGBoosting
+xgb = XGBClassifier(n_estimators=100,
+                    learning_rate=0.05,
+                    max_depth=3,
+                    scale_pos_weight=7, 
+                    objective='binary:logistic',
+                    n_jobs=-1,
+                    eval_metric='auc'
+                    )
+
+
+## Random Forest
+rf = RandomForestClassifier(
+    n_estimators= 200,
+    max_depth= 8,
+    class_weight= 'balanced',
+    n_jobs= -1
+)
+
+
+####### ENTRENAMIENTO Y PREDICIONES DE LOS MODELOS ######
+
+## Entrenamiento
+start_time_xgb = time.time()
+xgb.fit(X_train, y_train)
+
+
+#y_pred_xgb = xgb.predict(X_test_scaled)
+y_probs_xgb = xgb.predict_proba(X_test_scaled)[:, 1] 
+y_pred_xgb_ajusted = (y_probs_xgb >= 0.6).astype(int)
+end_time_xgb = time.time()
+xgb_train_time = end_time_xgb - start_time_xgb
+
+#---------------------------------#
+
+start_time_rf = time.time()
+rf.fit(X_train, y_train)
+
+#y_pred_rf = rf.predict(X_test_scaled)
+y_probs_rf = rf.predict_proba(X_test_scaled)[:, 1] 
+y_pred_rf_ajusted = (y_probs_rf >= 0.5).astype(int)
+end_time_rf = time.time()
+rf_train_time = end_time_rf - start_time_rf
+
+print(f'Tiempo de entrenamiento y predicción de XGBoosting: {xgb_train_time} segundos')
+print(f'Tiempo de entrenamiento y prendicción de Random Forest: {rf_train_time} segundos')
+
+
+######## EVALUACIÓN DE LOS MODELOS ########
+
+print('\n~~~~~~~~~~~~~~ EVALUACION DE XGBoosting ~~~~~~~~~~~~~~')
+print(f"AUC-ROC Score: {roc_auc_score(y_test, y_pred_xgb_ajusted):.4f}")
+print(f'F1-score:  {f1_score(y_test, y_pred_xgb_ajusted):.4f}')
+print(f'Recall:   {recall_score(y_test, y_pred_xgb_ajusted):.4f}')
+print(f'Precision:   {precision_score(y_test, y_pred_xgb_ajusted):.4f}')
+print('Confusion matrix:\n')
+print(confusion_matrix(y_test, y_pred_xgb_ajusted))
+
+print('\n~~~~~~~~~~~~~~ EVALUACION DE Random Forest ~~~~~~~~~~~~~~')
+print(f"AUC-ROC Score: {roc_auc_score(y_test, y_pred_rf_ajusted):.4f}")
+print(f'F1-score:  {f1_score(y_test, y_pred_rf_ajusted):.4f}')
+print(f'Recall:   {recall_score(y_test, y_pred_rf_ajusted):.4f}')
+print(f'Precision:   {precision_score(y_test, y_pred_rf_ajusted):.4f}')
+print('Confusion matrix:\n')
+print(confusion_matrix(y_test, y_pred_rf_ajusted))
 
 
 

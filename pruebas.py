@@ -3,13 +3,13 @@ import tarfile
 import os
 
 # 1. Cargar datos
-df_morph = pd.read_csv('morphology_catalogue.csv')
+df_morph = pd.read_csv('data/morphology_catalogue.csv')
 
 # Filtramos (por ejemplo, cogemos las primeras 5 espirales seguras para probar)
-merging_minor = df_morph[df_morph['merging_minor-disturbance_fraction'] > 0.4].head(5)
+merging_minor = df_morph[df_morph['merging_major-disturbance_fraction'] > 0.4].head(5)
 
 # 2. Configuración
-tar_path = 'cutouts_jpg_gz_arcsinh_vis_y.tar' # El archivo de 3.8GB
+tar_path = 'data/cutouts_jpg_gz_arcsinh_vis_y.tar' # El archivo de 3.8GB
 output_dir = 'Imagenes_Galaxias'
 os.makedirs(output_dir, exist_ok=True)
 
@@ -55,26 +55,7 @@ with tarfile.open(tar_path, 'r') as tar:
 
 print("¡Proceso terminado!")
 
-labels = df_morph.columns.tolist()
-print(len(labels))
-for elements in labels:
-    print(elements,'\n')
 
 
 
-# ⚠️ PASO 1: Define la ruta a tu archivo .parquet
-# Asegúrate de usar la 'r' minúscula si estás en Windows para evitar errores de ruta.
-file_path = r"C:/Users/Usuario/Desktop/cositas en python/clasificacion de galaxias/useful_physical_measurements.parquet" 
-
-# ⚠️ PASO 2: Carga el archivo Parquet
-# Pandas lee Parquet directamente
-try:
-    df_phys = pd.read_parquet(file_path)
-    
-    segundo_label = df_phys.columns.to_list()
-    print(len(segundo_label))
-
-except FileNotFoundError:
-    print(f"ERROR: No se encontró el archivo en la ruta: {file_path}")
-except Exception as e:
-    print(f"Ocurrió un error al leer el archivo: {e}")
+   
