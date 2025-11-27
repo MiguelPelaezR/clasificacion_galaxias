@@ -38,7 +38,7 @@ data = data.dropna()
 #print(data.shape) #(361913, 21)
 #print(data.head(6).T)
 
-
+print('haciendo cambios')
 
 ####### CREAMOS EL CONJUNTO CON EL QUE INFERIREMOS SI LAS GALAXIAS SE ESTAN FUSIONANDO, (i.e. ELIMINAMOS LAS COLUMNAS "merging") #######
 
