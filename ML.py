@@ -60,7 +60,7 @@ y = data['Merging']
     #0    264015
     #1     97931 clase infra-representada (hay que tenerlo en cuenta)
 
-print('distinto')
+
 
 #### PREPARAR LOS DATOS PARA ENTRENAMIENTO Y PRUEBA, ADEMÁS DE ESTANDARIZAR LOS DATOS ##########
 
