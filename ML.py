@@ -11,10 +11,10 @@ import matplotlib.pyplot as plt
 
 #### DESCARGAMOS LOS DATASETS #####
 
-path_morphology = r"C:/Users/Usuario/Desktop/cositas en python/clasificacion de galaxias/data/morphology_catalogue.csv"
+path_morphology = r"C:/Users/Usuario\Documents\datasets de glaxias/morphology_catalogue.csv"
 data_morph = pd.read_csv(path_morphology)
 
-path_physical = r"C:/Users/Usuario/Desktop/cositas en python/clasificacion de galaxias/data/useful_physical_measurements.parquet"
+path_physical = r"C:/Users/Usuario\Documents\datasets de glaxias/useful_physical_measurements.parquet"
 data_phys = pd.read_parquet(path_physical)
 
 #Tomamos las variables que más nos interesan a la hora de inferir si se están fusionando o no y además, las variables de "merging"

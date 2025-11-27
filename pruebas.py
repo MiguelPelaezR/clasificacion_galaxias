@@ -3,7 +3,7 @@ import tarfile
 import os
 
 # 1. Cargar datos
-df_morph = pd.read_csv('data/morphology_catalogue.csv')
+df_morph = pd.read_csv('C:\Users\Usuario\Documents\datasets de glaxias/morphology_catalogue.csv')
 
 # Filtramos (por ejemplo, cogemos las primeras 5 espirales seguras para probar)
 merging_minor = df_morph[df_morph['merging_major-disturbance_fraction'] > 0.4].head(5)
