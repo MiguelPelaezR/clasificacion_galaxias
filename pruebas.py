@@ -13,6 +13,7 @@ tar_path = 'data/cutouts_jpg_gz_arcsinh_vis_y.tar' # El archivo de 3.8GB
 output_dir = 'Imagenes_Galaxias'
 os.makedirs(output_dir, exist_ok=True)
 
+
 print(f"Abriendo el archivo TAR: {tar_path} (esto puede tardar unos segundos)...")
 
 # 3. Abrir el TAR y buscar las imágenes
